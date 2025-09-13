@@ -7,12 +7,14 @@ import { GradientText } from '../../components/ui/GradientText';
 import { GradientButton } from '../../components/ui/GradientButton';
 import { FeatureCard } from '../../components/ui/FeatureCard';
 import { useLocalization } from '../../hooks/useLocalization';
+import { useAuth } from '../../contexts/AuthContext';
 import { Colors } from '../../constants/Colors';
 import { Typography } from '../../constants/Typography';
 import { Spacing } from '../../constants/Spacing';
 
 export default function HomeScreen() {
   const { t, language, changeLanguage } = useLocalization();
+  const { user } = useAuth();
 
   const handleGetStarted = () => {
     console.log('Get Started pressed!');
@@ -49,7 +51,9 @@ export default function HomeScreen() {
 
           {/* Hero Section */}
           <View style={styles.heroSection}>
-            <Text style={styles.welcomeText}>{t('home.welcome')}</Text>
+            <Text style={styles.welcomeText}>
+              {user ? `Welcome back, ${user.name.split(' ')[0]}!` : t('home.welcome')}
+            </Text>
             <View style={styles.brandContainer}>
               <GradientText style={styles.brandText}>
                 {t('home.brandName')}
@@ -57,6 +61,12 @@ export default function HomeScreen() {
             </View>
             <Text style={styles.subtitleText}>{t('home.subtitle')}</Text>
             <Text style={styles.descriptionText}>{t('home.description')}</Text>
+            
+            {user?.role && (
+              <View style={styles.roleContainer}>
+                <Text style={styles.roleText}>Role: {user.role.toUpperCase()}</Text>
+              </View>
+            )}
             
             <GradientButton
               title={t('home.getStarted')}
@@ -202,6 +212,20 @@ const styles = StyleSheet.create({
   getStartedButton: {
     minWidth: 200,
     marginBottom: Spacing.xl,
+  },
+  roleContainer: {
+    backgroundColor: Colors.dark.surface.secondary,
+    borderWidth: 1,
+    borderColor: Colors.primary[500],
+    borderRadius: 20,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    marginBottom: Spacing.lg,
+  },
+  roleText: {
+    ...Typography.styles.caption,
+    color: Colors.primary[400],
+    fontFamily: Typography.families.semibold,
   },
   buttonsSection: {
     paddingTop: Spacing.lg,

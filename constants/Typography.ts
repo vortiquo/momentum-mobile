@@ -1,10 +1,12 @@
+import { Platform } from 'react-native';
+
 export const Typography = {
   // Font families (easily customizable)
   families: {
-    regular: 'Inter-Regular',
-    medium: 'Inter-Medium',
-    semibold: 'Inter-SemiBold',
-    bold: 'Inter-Bold',
+    regular: Platform.OS === 'web' ? 'Inter, system-ui, sans-serif' : 'Inter-Regular',
+    medium: Platform.OS === 'web' ? 'Inter, system-ui, sans-serif' : 'Inter-Medium',
+    semibold: Platform.OS === 'web' ? 'Inter, system-ui, sans-serif' : 'Inter-SemiBold',
+    bold: Platform.OS === 'web' ? 'Inter, system-ui, sans-serif' : 'Inter-Bold',
   },
   
   // Font sizes
@@ -32,42 +34,50 @@ export const Typography = {
   styles: {
     h1: {
       fontSize: 48,
-      fontFamily: 'Inter-Bold',
+      fontFamily: Platform.OS === 'web' ? 'Inter, system-ui, sans-serif' : 'Inter-Bold',
+      fontWeight: Platform.OS === 'web' ? '700' : 'normal',
       lineHeight: 1.25,
     },
     h2: {
       fontSize: 36,
-      fontFamily: 'Inter-Bold',
+      fontFamily: Platform.OS === 'web' ? 'Inter, system-ui, sans-serif' : 'Inter-Bold',
+      fontWeight: Platform.OS === 'web' ? '700' : 'normal',
       lineHeight: 1.25,
     },
     h3: {
       fontSize: 30,
-      fontFamily: 'Inter-SemiBold',
+      fontFamily: Platform.OS === 'web' ? 'Inter, system-ui, sans-serif' : 'Inter-SemiBold',
+      fontWeight: Platform.OS === 'web' ? '600' : 'normal',
       lineHeight: 1.25,
     },
     h4: {
       fontSize: 24,
-      fontFamily: 'Inter-SemiBold',
+      fontFamily: Platform.OS === 'web' ? 'Inter, system-ui, sans-serif' : 'Inter-SemiBold',
+      fontWeight: Platform.OS === 'web' ? '600' : 'normal',
       lineHeight: 1.25,
     },
     body: {
       fontSize: 16,
-      fontFamily: 'Inter-Regular',
+      fontFamily: Platform.OS === 'web' ? 'Inter, system-ui, sans-serif' : 'Inter-Regular',
+      fontWeight: Platform.OS === 'web' ? '400' : 'normal',
       lineHeight: 1.5,
     },
     bodyLarge: {
       fontSize: 18,
-      fontFamily: 'Inter-Regular',
+      fontFamily: Platform.OS === 'web' ? 'Inter, system-ui, sans-serif' : 'Inter-Regular',
+      fontWeight: Platform.OS === 'web' ? '400' : 'normal',
       lineHeight: 1.5,
     },
     caption: {
       fontSize: 14,
-      fontFamily: 'Inter-Regular',
+      fontFamily: Platform.OS === 'web' ? 'Inter, system-ui, sans-serif' : 'Inter-Regular',
+      fontWeight: Platform.OS === 'web' ? '400' : 'normal',
       lineHeight: 1.5,
     },
     button: {
       fontSize: 16,
-      fontFamily: 'Inter-SemiBold',
+      fontFamily: Platform.OS === 'web' ? 'Inter, system-ui, sans-serif' : 'Inter-SemiBold',
+      fontWeight: Platform.OS === 'web' ? '600' : 'normal',
       lineHeight: 1.25,
     },
   },
