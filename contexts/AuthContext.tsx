@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useState, useRef, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter, useSegments } from 'expo-router';
 import { apiService } from '../services/api';
@@ -17,6 +17,7 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
+  const isMounted = useRef(true);
   const [authState, setAuthState] = useState<AuthState>({
     user: null,
     tokens: null,
@@ -26,6 +27,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const router = useRouter();
   const segments = useSegments();
+
+  useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   useEffect(() => {
     checkAuthStatus();
@@ -61,48 +68,60 @@ export function AuthProvider({ children }: AuthProviderProps) {
         const tokenExpiry = tokens.expiresIn;
 
         if (now < tokenExpiry) {
-          setAuthState({
-            user,
-            tokens,
-            isAuthenticated: true,
-            isLoading: false,
-          });
+          if (isMounted.current) {
+            setAuthState({
+              user,
+              tokens,
+              isAuthenticated: true,
+              isLoading: false,
+            });
+          }
           return;
         }
       }
 
       // No valid auth found
-      setAuthState({
-        user: null,
-        tokens: null,
-        isAuthenticated: false,
-        isLoading: false,
-      });
+      if (isMounted.current) {
+        setAuthState({
+          user: null,
+          tokens: null,
+          isAuthenticated: false,
+          isLoading: false,
+        });
+      }
     } catch (error) {
       console.error('Error checking auth status:', error);
-      setAuthState({
-        user: null,
-        tokens: null,
-        isAuthenticated: false,
-        isLoading: false,
-      });
+      if (isMounted.current) {
+        setAuthState({
+          user: null,
+          tokens: null,
+          isAuthenticated: false,
+          isLoading: false,
+        });
+      }
     }
   };
 
   const login = async (credentials: LoginCredentials) => {
     try {
-      setAuthState(prev => ({ ...prev, isLoading: true }));
+      if (isMounted.current) {
+        setAuthState(prev => ({ ...prev, isLoading: true }));
+      }
       
       const authResponse = await apiService.login(credentials);
       
-      setAuthState({
-        user: authResponse.user,
-        tokens: authResponse.tokens,
-        isAuthenticated: true,
-        isLoading: false,
-      });
+      if (isMounted.current) {
+        setAuthState({
+          user: authResponse.user,
+          tokens: authResponse.tokens,
+          isAuthenticated: true,
+          isLoading: false,
+        });
+      }
     } catch (error) {
-      setAuthState(prev => ({ ...prev, isLoading: false }));
+      if (isMounted.current) {
+        setAuthState(prev => ({ ...prev, isLoading: false }));
+      }
       throw error;
     }
   };
@@ -110,21 +129,25 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const logout = async () => {
     try {
       await apiService.logout();
-      setAuthState({
-        user: null,
-        tokens: null,
-        isAuthenticated: false,
-        isLoading: false,
-      });
+      if (isMounted.current) {
+        setAuthState({
+          user: null,
+          tokens: null,
+          isAuthenticated: false,
+          isLoading: false,
+        });
+      }
     } catch (error) {
       console.error('Logout error:', error);
       // Force logout even if API call fails
-      setAuthState({
-        user: null,
-        tokens: null,
-        isAuthenticated: false,
-        isLoading: false,
-      });
+      if (isMounted.current) {
+        setAuthState({
+          user: null,
+          tokens: null,
+          isAuthenticated: false,
+          isLoading: false,
+        });
+      }
     }
   };
 
